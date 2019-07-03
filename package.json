@@ -1,0 +1,19 @@
+{
+  "name": "Sample_google",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-app-generator": "^1.0.2",
+    "path": "^0.12.7",
+    "save": "^2.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "nodemon home.ejs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
