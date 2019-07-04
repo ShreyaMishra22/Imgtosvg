@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <title>Custom Markers</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+
+
+  <body>
+      <h3>Custom Icon</h3>
+      <button type="button" class="btn btn-primary"  onclick="clearMarkers();">Clear Icon</button>
+      <button type="button" class="btn btn-danger" onclick="deleteMarkers()">Delete Icon</button>
+      <button type="button" class="btn btn-success" onclick="showMarkers();">Show Icon</button>
+    <div id="map"></div>
+    <div id="legend"><h3>Legend</h3></div>
+    <script>
+      var map;
+      var poly; 
+      
+    function initMap() {
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 7,
+        center: {lat: 22.7196, lng: 75.8577}  // Center the map on Chicago, USA.
+    });
+
+    
+    poly = new google.maps.Polyline({
+        strokeColor: '#000000',
+        strokeOpacity: 1.0,
+        strokeWeight: 3
+    });
+    poly.setMap(map);
+
+    // Add a listener for the click event
+    map.addListener('click', addLatLng);
+    }
+
+    // Handles click events on a map, and adds a new point to the Polyline.
+    function addLatLng(event) {
+        var path = poly.getPath();
+        console.log('***************path',path)
+        // Because path is an MVCArray, we can simply append a new coordinate
+        // and it will automatically appear.
+        path.push(event.latLng);
+        console.log('-----------event.latLng',event.latLng)
+        // Add a new marker at the new plotted point on the polyline.
+        var marker = new google.maps.Marker({
+            position: event.latLng,
+            title: '#' + path.getLength(),
+            map: map,
+        });
+    }
+
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPnljxkJKYVDqpspU3UDzhw4cvBy15r1E&libraries=drawing&callback=initMap">
+    </script>
+  </body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
