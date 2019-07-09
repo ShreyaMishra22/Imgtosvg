@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Custom Markers</title>
+    <title>Geocode Address</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 
@@ -17,58 +17,163 @@
         margin: 0;
         padding: 0;
       }
+
+      /* Width of search box. */
+      .widthheight {
+        width: 30%;
+        height: 10%;
+      }
+      /* style for infowindow of cluster */
+      .mapcontent {
+        font-family: 'Open Sans Condensed', sans-serif;
+        font-size: 22px;
+        font-weight: 400;
+        padding: 10px;
+        background-color: #e8f0f3;
+        color: black;
+        margin: 0;
+        border-radius: 2px 2px 0 0;
+
+      }
     </style>
   </head>
 
 
   <body>
-      <h3>Custom Icon</h3>
-      <button type="button" class="btn btn-primary"  onclick="clearMarkers();">Clear Icon</button>
-      <button type="button" class="btn btn-danger" onclick="deleteMarkers()">Delete Icon</button>
-      <button type="button" class="btn btn-success" onclick="showMarkers();">Show Icon</button>
+    <h3>Marker Cluster</h3>
+<!--     <span><input id="from" class="widthheight" type="text" placeholder="Enter Address"></span> 
+    <span><input id="to" class="controls" type="text" placeholder="to"></span>
+    <input type="button" class="btn btn-primary" value="Find" onclick="codeAddress();"> -->
     <div id="map"></div>
-    <div id="legend"><h3>Legend</h3></div>
-    <script>
-      var map;
-      var poly; 
-      
-    function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 7,
-        center: {lat: 22.7196, lng: 75.8577}  // Center the map on Chicago, USA.
-    });
-
     
-    poly = new google.maps.Polyline({
-        strokeColor: '#000000',
-        strokeOpacity: 1.0,
-        strokeWeight: 3
-    });
-    poly.setMap(map);
+    <script>
+      var geocoder;
+      
+      function initMap() {
 
-    // Add a listener for the click event
-    map.addListener('click', addLatLng);
-    }
-
-    // Handles click events on a map, and adds a new point to the Polyline.
-    function addLatLng(event) {
-        var path = poly.getPath();
-        console.log('***************path',path)
-        // Because path is an MVCArray, we can simply append a new coordinate
-        // and it will automatically appear.
-        path.push(event.latLng);
-        console.log('-----------event.latLng',event.latLng)
-        // Add a new marker at the new plotted point on the polyline.
-        var marker = new google.maps.Marker({
-            position: event.latLng,
-            title: '#' + path.getLength(),
-            map: map,
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 5,
+          center: {lat: 22.7196, lng: 75.8577}
         });
-    }
 
+        // Create an array of alphabetical characters used to label the markers.
+        // var labels = 'HELLO';
+          var labels = ['Hi','how','are','you','?'];
+        
+        var markers = locations.map(function(location, i) {
+          var item = locations[i];
+          // console.log('title----',item)
+          return new google.maps.Marker({
+            position: location,
+            title: item[0],
+            label: labels[i % labels.length],
+           
+          });
+        });
+     
+        // Add a marker clusterer to manage the markers.
+        var clusterOptions = {
+            zoomOnClick: false,
+            imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+        }
+
+          markerCluster = new MarkerClusterer(map, markers, clusterOptions);     
+          var infowindow = new google.maps.InfoWindow;
+          google.maps.event.addListener(markerCluster, 'clusterclick', function(cluster) {
+            var marks_in_cluster = cluster.getMarkers();
+            for (var z = 0; z < marks_in_cluster.length; z++) {
+                
+            }
+            var content = '<div class="mapcontent"><h4>This cluster contains '+ marks_in_cluster.length +' markers </h4></div> ';
+            // Convert the coordinates to an MVCObject
+            var info = new google.maps.MVCObject;
+            info.set('position', cluster.center_);
+            //Get markers
+            
+              infowindow.setContent(content); 
+              infowindow.open(map, info);
+              google.maps.event.addListener(map, 'dblclick', function() {
+              
+              });
+          });
+          //End of cluster infowindow
+        }
+        var locations = [
+        {lat: 22.7545, lng: 75.9035}, 
+        {lat: 22.7250, lng: 75.8776},
+        {lat: 22.731457, lng: 75.914391},
+        {lat: 22.7277, lng:  75.8044}, 
+        {lat: 22.705330, lng: 75.871570},
+        ]
+/*       function initMap() {
+        geocoder = new google.maps.Geocoder();
+        // The location of INDORE
+        var Indore = {lat: 22.7196, lng: 75.8577};
+        // The map, centered at Indore
+        var map = new google.maps.Map(
+        document.getElementById('map'), {zoom: 8, center: Indore});
+
+      }
+
+      function codeAddress() {
+        var address = document.getElementById("from").value;
+        console.log('address----------',address);
+        var loc=[];
+
+        // next line creates asynchronous request
+        geocoder.geocode( { 'address': address}, function(results, status) {
+          console.log('results----------',results);
+          // and this is function which processes response
+          if (status == google.maps.GeocoderStatus.OK) {
+            loc[0]=results[0].geometry.location.lat();
+            loc[1]=results[0].geometry.location.lng();
+
+            alert( loc ); // the place where loc contains geocoded coordinates
+
+          } else {
+            alert("Geocode was not successful for the following reason: " + status);
+          }
+        });
+
+        // pretty meaningless, because it always will be []
+        // this line is executed right after creating AJAX request, but not after its response comes
+        return loc;
+      }
+
+  function display(){
+     codeAddress();
+  } */
+   /*    function initMap() {
+        geocoder = new google.maps.Geocoder();
+      // The location of INDORE
+      var Indore = {lat: 22.7196, lng: 75.8577};
+      // The map, centered at Indore
+      var map = new google.maps.Map(
+          document.getElementById('map'), {zoom: 8, center: Indore});
+      // The marker, positioned at Uluru
+      var marker = new google.maps.Marker({position: Indore, map: Indore});
+    }
+    function codeAddress() {
+    var address = document.getElementById('from').value;
+    console.log('address is here--------',address);
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      console.log('*********results',results,'******status',status);
+      if (status == 'OK') {
+        map.setCenter(results[0].geometry.location);
+        var marker = new google.maps.Marker({
+            map: map,
+            position: results[0].geometry.location
+        });
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+  } */
     </script>
+     <script src="https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+     </script>
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPnljxkJKYVDqpspU3UDzhw4cvBy15r1E&libraries=drawing&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPnljxkJKYVDqpspU3UDzhw4cvBy15r1E&libraries=drawing&callback=initMap&sensor=true">
     </script>
   </body>
 

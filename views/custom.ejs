@@ -26,26 +26,99 @@
       <button type="button" class="btn btn-success" onclick="showMarkers();">Show Icon</button>
     <div id="map"></div>
     <div id="legend"><h3>Legend</h3></div>
+
     <script>
       var map;
+      var poly; 
       var uniqueId = 0;
       var markerArray = [];
       var myListener  = [];
+      var eventss;
+    //   var FormatedR =  JSON.stringify(Result);
+      
       function initMap() {
         var geocoder = new google.maps.Geocoder();
-        //Try
-            
-        //End Try
-        map = new google.maps.Map(
-            document.getElementById('map'),
-            {center: new google.maps.LatLng(22.7196, 75.8577), zoom: 12});
-        
 
         // Icon Base from Doc
-        var iconBase =
-            'http://maps.google.com/mapfiles/kml/shapes/';
+        var iconBase  =  'http://maps.google.com/mapfiles/kml/shapes/';
         var iconBase1 = 'http://maps.google.com/mapfiles/kml/pal2/'; 
         var iconBase2 = 'http://maps.google.com/mapfiles/kml/pal3/'; 
+
+        //Try
+        var drawingManager = new google.maps.drawing.DrawingManager({
+          drawingMode: google.maps.drawing.OverlayType.MARKER,
+          drawingControl: true,
+         
+          drawingControlOptions: {
+            position: google.maps.ControlPosition.TOP_RIGHT,
+            drawingModes: ['marker', 'circle', 'polygon', 'polyline', 'rectangle']
+          },
+          markerOptions: {icon: 'http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png'},
+          //Circle options for drawing circles
+            circleOptions: {
+                fillColor: '#fafaa0',
+                fillOpacity: 0,
+                strokeWeight: 2,
+                clickable: false,
+                editable: true,
+                zIndex: 1
+            },  
+        });
+        drawingManager.setMap(map);
+      
+
+        google.maps.event.addListener(drawingManager, 'overlaycomplete', function(event) {
+            console.log('-----------events',event,)
+            if (event.type == 'circle') {
+                var radius = event.overlay.getRadius();// Radius of circle
+            }  
+            if (event.type == 'polygon') {
+                var PolygonPath = [];
+                eventsLength = event.overlay.getPaths().getArray()[0].length;
+                    for(var i = 0; i < eventsLength;i++) {
+                        PolygonPath.push({latitude: event.overlay.getPaths().getArray()[0].j[i].lat(),
+                            longitude: event.overlay.getPaths().getArray()[0].j[i].lng()})      
+                    }
+            // var PolygonPathLat = event.overlay.getPaths().getArray()[0].j[0].lat(); //Latitude of polygon
+            // var PolygonPathlng = event.overlay.getPaths().getArray()[0].j[0].lng(); //Longitude of polygon
+            SaveData(event.type,PolygonPath );
+                // console.log('=======polygon path',PoligonPath);
+            }  
+            if (event.type == 'polyline') {
+                var PolylinePath =[]
+                    eventsLength = event.overlay.latLngs.j[0].length;
+                    for(var i = 0; i < eventsLength;i++) {
+                        PolylinePath.push({latitude:event.overlay.latLngs.j[0].j[i].lat(),
+                            longitude:event.overlay.latLngs.j[0].j[i].lng()})      
+                    }
+            //var PolylinePathLat = event.overlay.latLngs.j[0].j[0].lat(); //Latitude of polyline
+           // var PolylinePathLng = event.overlay.latLngs.j[0].j[0].lng(); //Longitude of polyline
+            SaveData(event.type,PolylinePath);
+                // console.log('=======Polyline path',PolylinePath);
+            }  
+            if (event.type == 'rectangle') {
+                rectPath = event.overlay;
+            }  
+            if (event.type == 'marker') {
+                var MarkerPath =[]
+                    MarkerPath.push({latitude : event.overlay.position.lat(),
+                                    longitude : event.overlay.position.lng()})           
+            // var markerPathLat = event.overlay.position.lat(); //Latitude of Marker
+            // var markerPathlng = event.overlay.position.lng(); //Longitude of Marker
+            console.log('---------MarkerPath',MarkerPath)
+            SaveData(event.type,MarkerPath);
+            // console.log('======markerPath',markerPathLat,markerPathlng);
+            }  
+        });
+        //End Try
+
+        map = new google.maps.Map(
+            document.getElementById('map'),
+            {center: new google.maps.LatLng(22.7196, 75.8577), 
+            zoom: 12});
+        
+
+ 
         
         // Assign the icon for different location
         var icons = {
@@ -90,7 +163,7 @@
                 map: map
             }));
 
-
+            drawingManager.setMap(map);
             var contentString = '<div id="content">'+
             '<div id="siteNotice">'+
             '</div>'+
@@ -100,7 +173,7 @@
             '.'+
             '</div>'+
             '</div>';
-
+            
             var infowindow = new google.maps.InfoWindow({
                 content: contentString
                 });
@@ -112,40 +185,7 @@
                     };
                 })(markerArray[i],contentString,infowindow));
             }; 
-
-             //Infowindows
-            /*    for (var point in features) {
-
-                    var contentString = '<div id="content">'+
-                        '<div id="siteNotice">'+
-                        '</div>'+
-                        '<h4 id="firstHeading" class="firstHeading">Hello Shreya,</h4>'+
-                        '<div id="bodyContent">'+
-                        '<p><b>you are at '+ features[point].type +'</b> ' +
-                        '.'+
-                        '</div>'+
-                        '</div>';
-
-                    var infowindow = new google.maps.InfoWindow({
-                    content: contentString
-                    });
-
-                    google.maps.event.addListener(markerArray[point], 'click', (function(marker,content,infowindow) {
-                        return function() {
-                        infowindow.setContent(content);
-                        infowindow.open(map, marker);
-                        };
-                    })(markerArray[point],contentString,infowindow));
-                } */
         }
-
-        // Sets the map on all markers in the array.
-       /*  function setMapOnAll(map) {
-            for (var i = 0; i < markerArray.length; i++) {
-                markerArray[i].setMap(map);
-            }
-        } */
-        //Confirmation Alert for deletion
         var txt;
         function Alert() {
             
@@ -182,8 +222,19 @@
         }
       
     </script>
+
+
+
+
     <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPnljxkJKYVDqpspU3UDzhw4cvBy15r1E&callback=initMap">
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPnljxkJKYVDqpspU3UDzhw4cvBy15r1E&libraries=drawing&callback=initMap">
     </script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+
   </body>
 </html>
+
+
+<script src="/public/js/function.js"></script>
+<script src="/assets/test.js"></script>
