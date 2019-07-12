@@ -25,6 +25,7 @@
     <script>
 // Initialize and add the map
   function initMap() {
+    
     var geocoder = new google.maps.Geocoder();
     var myLatlng = new google.maps.LatLng(24.077170, 75.065422);
     var mapOptions = {
@@ -104,25 +105,6 @@
     }, 1000000);
     /* Code for making Marker-> End */
 
-    /* Code for making Polygon-> Start */
-      var triangleCoords = [
-        {lat: 24.077170, lng: 75.065422},
-        {lat: 24.081870, lng: 75.070540},
-        {lat: 24.069771, lng: 75.073860},
-        {lat: 24.077170, lng: 75.065422}
-      ];
-
-      // Construct the polygon.
-      var bermudaTriangle = new google.maps.Polygon({
-        paths: triangleCoords,
-        strokeColor: '#FF0000',
-        strokeOpacity: 0.8,
-        strokeWeight: 2,
-        fillColor: '#FF0000',
-        fillOpacity: 0.35
-      });
-        bermudaTriangle.setMap(map);  
-    /* Code for making Polygon-> End */
 
       /* Add Conect to show on Infowindow -> start */
         var contentString = '<div id="content">'+
