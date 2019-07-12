@@ -36,16 +36,16 @@ function insertdata(tbl_nm,data,cb){
                 cb(err);
                 return;
             }
-            console.log('--------------------table id',res[0].LargestID)
+            // console.log('--------------------table id',res[0].LargestID)
             cb(null,res[0].LargestID);
         });
     })
 }
 
 function insertLatLng(tbl_nm,data,cb){
-    console.log(data,'--------data',tbl_nm)
+    // console.log(data,'--------data',tbl_nm)
     var query="INSERT INTO `"+tbl_nm+"` (Draw_Id, Latitude, Longitude) VALUES ('"+data[0].Draw_Id+"','"+data[0].Latitude+"','"+data[0].Longitude+"')";
-    console.log('--------query',query)
+    // console.log('--------query',query)
     connection.query(query,function(err,result){
          if(err){
              console.log('Error**************');

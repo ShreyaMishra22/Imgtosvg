@@ -9,7 +9,7 @@ router.get('/', function (req, res) {
         if (err) {
             return;
         }
-        console.log('================result',Result);
+        // console.log('================result',Result);
         res.render('custom',{     
             Result : Result,
         });
@@ -47,7 +47,7 @@ router.get('/save-Data/:ID', function (req, res) {
                         console.log('Error in Inserting Data  in latlong table',err);
                         return;
                     } else {
-                        console.log('Successfully Inserted Data in latlong table',res);
+                        console.log('Successfully Inserted Data in latlong table');
                     
                     }
                 });
