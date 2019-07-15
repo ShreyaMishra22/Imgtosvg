@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <script src="/js/imagetracer.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <svg id="svgcontainer" height="50%" width="50%"></svg>
+        
+        <form action="/image/upload"  method="POST" enctype="multipart/form-data"> 
+            Upload File :- <input type="file" id="image" value="" name="f1">
+            <button  type="submit" value="Submit">Convert</button>
+        </form>
+        <button  type="" onclick="test('<%= Filename %>')">ShowSVGImage</button>
+        <a href="" id="link" download style="display: none;">Click here to download</a>
+    </body>
+    <script type="text/javascript">
+        function test(Filename){
+            ImageTracer.imageToSVG(
+            '/img/'+Filename, 
+            function(svgstr){ ImageTracer.appendSVGString( svgstr, 'svgcontainer');}, 
+           );
+          var checkval= setInterval(function(){ 
+              var Filedata = $('#svgcontainer').html();
+              console.log(Filedata.length,'Filedata')
+            if(Filedata.length > 0 ){
+                $.ajax({
+                    url:'/image/download',
+                    data:{Filedata : Filedata},
+                    type:'post',
+                    success:function(res){
+                    $('#link').attr("href","/img/s.svg").show();
+                    }
+                })
+               
+                clearInterval(checkval)
+            }
+          }, 3000);
+        }
+    </script>
+</html>
