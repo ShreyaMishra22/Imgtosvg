@@ -5,14 +5,15 @@ var fileupload=require('express-fileupload');
 const bodyParser = require("body-parser");
 
 app.use(bodyParser.urlencoded({limit: '500mb', extended: true}));
-app.use(bodyParser()); 
+app.use(bodyParser.json())
 
 app.set('views',path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded());
+
 app.use(express.urlencoded({extended: false}));
 
 app.use(express.json()); 
